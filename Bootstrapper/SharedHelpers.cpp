@@ -291,7 +291,7 @@ std::wstring getQTStudioCode()
 void appendEnvironmentToProtocolScheme(std::wstring& scheme, const std::string baseUrl)
 {
 	std::vector<std::string> baseHostUrlParts = splitOn(baseUrl, '.');
-	if (baseHostUrlParts[1] != "seattle")
+	if (baseHostUrlParts[1] != "seattl")
 	{
 		scheme += convert_s2w("-" + baseHostUrlParts[1]);
 	}
