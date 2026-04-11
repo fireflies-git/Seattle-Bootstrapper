@@ -2038,7 +2038,7 @@ void Bootstrapper::run()
 				// if the system is indicating we have roblox installed, try and find the exe
 				HANDLE robloxAppFile;
 				WIN32_FIND_DATA robloxAppFileData;
-				std::wstring pathCheckingFor = programDirectory() + L"2022M\\" + GetRobloxAppFileName().c_str();
+				std::wstring pathCheckingFor = programDirectory() + L"2021M\\" + GetRobloxAppFileName().c_str();
 				// 2017L is always our default client if none is specified so check that
 				robloxAppFile = FindFirstFile(pathCheckingFor.c_str(), &robloxAppFileData);
 
