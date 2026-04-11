@@ -68,21 +68,21 @@ jobs:
         
     - name: Verify Executables Exist
       run: |
-        $x86Exists = Test-Path "BootstrapperClient\bin\Release\Win32\PekoraPlayerLauncher.exe"
-        $x64Exists = Test-Path "BootstrapperClient\bin\Release\x64\PekoraPlayerLauncher.exe"
+        $x86Exists = Test-Path "BootstrapperClient\bin\Release\Win32\SeattlePlayerLauncher.exe"
+        $x64Exists = Test-Path "BootstrapperClient\bin\Release\x64\SeattlePlayerLauncher.exe"
 
         if ($x86Exists) {
-          Write-Host "PekoraPlayerLauncher.exe (x86) built successfully!"
-          Get-Item "BootstrapperClient\bin\Release\Win32\PekoraPlayerLauncher.exe" | Select-Object Name, Length, LastWriteTime
+          Write-Host "SeattlePlayerLauncher.exe (x86) built successfully!"
+          Get-Item "BootstrapperClient\bin\Release\Win32\SeattlePlayerLauncher.exe" | Select-Object Name, Length, LastWriteTime
         } else {
-          Write-Host "PekoraPlayerLauncher.exe (x86) not found!"
+          Write-Host "SeattlePlayerLauncher.exe (x86) not found!"
         }
 
         if ($x64Exists) {
-          Write-Host "PekoraPlayerLauncher.exe (x64) built successfully!"
-          Get-Item "BootstrapperClient\bin\Release\x64\PekoraPlayerLauncher.exe" | Select-Object Name, Length, LastWriteTime
+          Write-Host "SeattlePlayerLauncher.exe (x64) built successfully!"
+          Get-Item "BootstrapperClient\bin\Release\x64\SeattlePlayerLauncher.exe" | Select-Object Name, Length, LastWriteTime
         } else {
-          Write-Host "PekoraPlayerLauncher.exe (x64) not found!"
+          Write-Host "SeattlePlayerLauncher.exe (x64) not found!"
         }
 
         if (-not $x86Exists -and -not $x64Exists) {
@@ -91,32 +91,16 @@ jobs:
           exit 1
         }
         
-    - name: Upload Build Artifacts (x86)
-      uses: actions/upload-artifact@v4
-      with:
-        name: PekoraPlayerLauncher-x86-Release
-        path: |
-          BootstrapperClient\bin\Release\Win32\PekoraPlayerLauncher.exe
-        retention-days: 30
-
-    - name: Upload Build Artifacts (x64)
-      uses: actions/upload-artifact@v4
-      with:
-        name: PekoraPlayerLauncher-x64-Release
-        path: |
-          BootstrapperClient\bin\Release\x64\PekoraPlayerLauncher.exe
-        retention-days: 30
-        
     - name: Create Release Package (x86)
       if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
       run: |
-        $zipName = "PekoraPlayerLauncher-x86.zip"
+        $zipName = "SeattlePlayerLauncher-x86.zip"
 
         # Create a temporary directory for packaging
         New-Item -ItemType Directory -Path "release-package-x86" -Force
 
         # Copy the executable
-        Copy-Item "BootstrapperClient\bin\Release\Win32\PekoraPlayerLauncher.exe" "release-package-x86\"
+        Copy-Item "BootstrapperClient\bin\Release\Win32\SeattlePlayerLauncher.exe" "release-package-x86\"
 
         # Create the zip file
         Compress-Archive -Path "release-package-x86\*" -DestinationPath $zipName -Force
@@ -127,13 +111,13 @@ jobs:
     - name: Create Release Package (x64)
       if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
       run: |
-        $zipName = "PekoraPlayerLauncher-x64.zip"
+        $zipName = "SeattlePlayerLauncher-x64.zip"
 
         # Create a temporary directory for packaging
         New-Item -ItemType Directory -Path "release-package-x64" -Force
 
         # Copy the executable
-        Copy-Item "BootstrapperClient\bin\Release\x64\PekoraPlayerLauncher.exe" "release-package-x64\"
+        Copy-Item "BootstrapperClient\bin\Release\x64\SeattlePlayerLauncher.exe" "release-package-x64\"
 
         # Create the release package
         Compress-Archive -Path "release-package-x64\*" -DestinationPath $zipName -Force
@@ -146,7 +130,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Release-Package-x86
-        path: "PekoraPlayerLauncher-x86.zip"
+        path: "SeattlePlayerLauncher-x86.zip"
         retention-days: 90
 
     - name: Upload Release Package (x64)
@@ -154,43 +138,25 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Release-Package-x64
-        path: "PekoraPlayerLauncher-x64.zip"
+        path: "SeattlePlayerLauncher-x64.zip"
         retention-days: 90
 
     - name: Create GitHub Release
       if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
       id: create_release
-      uses: actions/create-release@v1
+      uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: v1.7.0.4
-        release_name: "Release 1.7.0.4"
+        name: "Release 1.7.0.4"
+        overwrite_files: true
         body: |
           ## Release 1.7.0.4
 
           **Build Date:** ${{ github.event.head_commit.timestamp }}
           **Commit:** ${{ github.sha }}
           **Platforms:** Windows x86 (32-bit) and x64 (64-bit)
-
-    - name: Upload Release Asset (x86)
-      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: PekoraPlayerLauncher-x86.zip
-        asset_name: PekoraPlayerLauncher-x86.zip
-        asset_content_type: application/zip
-
-    - name: Upload Release Asset (x64)
-      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: PekoraPlayerLauncher-x64.zip
-        asset_name: PekoraPlayerLauncher-x64.zip
-        asset_content_type: application/zip
+        files: |
+          SeattlePlayerLauncher-x86.zip
+          SeattlePlayerLauncher-x64.zip

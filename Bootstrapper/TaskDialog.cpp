@@ -174,8 +174,8 @@ void CTaskDialog::run()
 	config.hInstance = instance;
 	config.dwCommonButtons = TDCBF_CANCEL_BUTTON;
 	config.pszMainIcon = MAKEINTRESOURCEW(IDI_BOOTSTRAPPER);
-	config.pszWindowTitle = L"Korone";
-	config.pszMainInstruction = L"Starting Korone";
+	config.pszWindowTitle = L"Seattle";
+	config.pszMainInstruction = L"Starting Seattle";
 	if (RBX_TDE_MESSAGE == TDE_EXPANDED_INFORMATION)
 	{
 		config.pszExpandedInformation = L"Please Wait...";		// https://msdn.microsoft.com/en-us/library/bb760536(VS.85).aspx states: If pszExpandedInformation is NULL and you attempt to send a TDM_UPDATE_ELEMENT_TEXT with TDE_EXPANDED_INFORMATION, nothing will happen.
@@ -263,7 +263,7 @@ void CTaskDialog::DisplayError(const char* message, const char* exceptionText)
 	config.hInstance = NULL;
 	config.dwCommonButtons = TDCBF_CLOSE_BUTTON;
 	config.pszMainIcon = TD_ERROR_ICON;
-	config.pszWindowTitle = L"Korone";
+	config.pszWindowTitle = L"Seattle";
 	CComBSTR btsr(message);
 	config.pszMainInstruction = btsr;
 	CComBSTR btsr2(exceptionText);
@@ -283,7 +283,7 @@ void CTaskDialog::FinalMessage(const char* message)
 	config.hInstance = NULL;
 	config.dwCommonButtons = TDCBF_OK_BUTTON;
 	config.pszMainIcon = MAKEINTRESOURCEW(IDI_BOOTSTRAPPER);
-	config.pszWindowTitle = L"Korone";
+	config.pszWindowTitle = L"Seattle";
 	CComBSTR btsr(message);
 	config.pszMainInstruction = btsr;
 

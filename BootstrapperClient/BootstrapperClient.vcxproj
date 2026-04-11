@@ -83,7 +83,7 @@
     <IntDir>obj\$(Configuration)\$(PlatformName)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
-    <TargetName>PekoraPlayerLauncher</TargetName>
+    <TargetName>SeattlePlayerLauncher</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(Platform)\$(Configuration)\</OutDir>
@@ -96,13 +96,13 @@
     <IntDir>obj\$(Configuration)\$(PlatformName)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>$(CONTRIB_PATH)\boost_1_84_0\stage\lib;$(LibraryPath)</LibraryPath>
-    <TargetName>PekoraPlayerLauncher</TargetName>
+    <TargetName>SeattlePlayerLauncher</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>bin\$(Configuration)\$(PlatformName)\</OutDir>
     <IntDir>obj\$(Configuration)\$(PlatformName)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
-    <TargetName>PekoraPlayerLauncher</TargetName>
+    <TargetName>SeattlePlayerLauncher</TargetName>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
@@ -134,7 +134,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>Iphlpapi.lib;taskschd.lib;mstask.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)PekoraPlayerLauncher.exe</OutputFile>
+      <OutputFile>$(OutDir)SeattlePlayerLauncher.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -166,7 +166,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(CONTRIB_PATH)\SDK\Lib\Iphlpapi.lib;$(CONTRIB_PATH)\SDK\Lib\taskschd.lib;$(CONTRIB_PATH)\SDK\Lib\mstask.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)PekoraPlayerLauncher.exe</OutputFile>
+      <OutputFile>$(OutDir)SeattlePlayerLauncher.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
@@ -198,7 +198,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>Iphlpapi.lib;taskschd.lib;mstask.lib;crypt32.lib;secur32.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)PekoraPlayerLauncher.exe</OutputFile>
+      <OutputFile>$(OutDir)SeattlePlayerLauncher.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -234,7 +234,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>Iphlpapi.lib;taskschd.lib;mstask.lib;crypt32.lib;secur32.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)PekoraPlayerLauncher.exe</OutputFile>
+      <OutputFile>$(OutDir)SeattlePlayerLauncher.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>

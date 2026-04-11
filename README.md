@@ -1,8 +1,8 @@
-# Korone Bootstrapper
+# Seattle Bootstrapper
 
-This repository contains the source code for the [Korone Bootstrapper](https://pekora.zip).
+This repository contains the source code for the [Seattle Bootstrapper](https://www.roblox.com).
 
-We are open sourcing this project to demonstrate transparency. Some users have mistakenly labeled Korone as a **RAT (Remote Access Trojan)** this code proves that the bootstrapper is completely safe.
+We are open sourcing this project to demonstrate transparency. Some users have mistakenly labeled Seattle as a **RAT (Remote Access Trojan)** this code proves that the bootstrapper is completely safe.
 
 ---
 

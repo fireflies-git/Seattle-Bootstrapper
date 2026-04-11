@@ -152,7 +152,7 @@ public:
 		, taskWnd(NULL)
 		, dialogResult(-1)
 	{
-		sprintf_s(instructions, 256, "Korone needs to close \"%s\"", windowTitle);
+		sprintf_s(instructions, 256, "Seattle needs to close \"%s\"", windowTitle);
 		std::thread(&CShutdownTaskDialog::run, this, instance, parent).detach();
 	}
 	~CShutdownTaskDialog(void)
@@ -173,7 +173,7 @@ public:
 		config.hwndParent = parent;
 		config.dwCommonButtons = TDCBF_CANCEL_BUTTON;
 		config.pszMainIcon = MAKEINTRESOURCEW(IDI_BOOTSTRAPPER);
-		config.pszWindowTitle = L"Korone";
+		config.pszWindowTitle = L"Seattle";
 		CComBSTR bstr(instructions);
 		config.pszMainInstruction = (BSTR)bstr;
 
@@ -236,7 +236,7 @@ public:
 	{
 		CString message;
 		message.Format(_T("\"%s\" needs to close.\n\nShut down now?  You may lose work that you haven't saved"), windowTitle);
-		result = ::MessageBox(parent, message, _T("Korone"), MB_OKCANCEL | MB_ICONQUESTION);
+		result = ::MessageBox(parent, message, _T("Seattle"), MB_OKCANCEL | MB_ICONQUESTION);
 	}
 
 	void CloseDialog(void)

@@ -178,7 +178,7 @@ public:
 				else
 				{
 					CString message;
-					message.Format(_T("An error occured and Pekora cannot continue.\n\n%S"), e.what());
+					message.Format(_T("An error occured and Seattle cannot continue.\n\n%S"), e.what());
 					::MessageBox(NULL, message, _T("Error"), MB_OK | MB_ICONEXCLAMATION);
 				}
 				result = -1;
@@ -919,7 +919,7 @@ std::shared_ptr<Bootstrapper> Bootstrapper::Create(HINSTANCE hInstance, Bootstra
 			CTimedMutexLock l1(m1);
 			if (l1.Lock(1) == WAIT_TIMEOUT)
 			{
-				LLOG_ENTRY(result->logger, "No bg update, Pekora App is running");
+				LLOG_ENTRY(result->logger, "No bg update, Seattle App is running");
 				return result;
 			}
 
@@ -1044,8 +1044,8 @@ void Bootstrapper::RegisterUninstall(const TCHAR *productName)
 	
 	std::wstring uninstallString = format_string(_T("\"%s%s\" -uninstall%s"), programDirectory().c_str(), GetBootstrapperFileName().c_str(), perUser ? _T("") : _T(" -alluser"));
 	throwHRESULT (keyProductCode->SetStringValue(_T("UninstallString"), uninstallString.c_str(), REG_EXPAND_SZ), "Failed to set UninstallString key");
-	throwHRESULT (keyProductCode->SetStringValue(_T("Publisher"), _T("Pekora Corporation")), "Failed to set Publisher key");
-	throwHRESULT (keyProductCode->SetStringValue(_T("URLInfoAbout"), _T("https://pekora.zip")), "Failed to set URLInfoAbout key");
+	throwHRESULT (keyProductCode->SetStringValue(_T("Publisher"), _T("Fireflies")), "Failed to set Publisher key");
+	throwHRESULT (keyProductCode->SetStringValue(_T("URLInfoAbout"), _T("https://seattl.lol")), "Failed to set URLInfoAbout key");
 	throwHRESULT (keyProductCode->SetStringValue(_T("Comments"), convert_s2w(installVersion).c_str()), "Failed to set Comments key");
 	throwHRESULT (keyProductCode->SetStringValue(_T("InstallLocation"), programDirectory().c_str()), "Failed to set InstallLocation key");
 	throwHRESULT (keyProductCode->SetDWORDValue(_T("NoModify"), 1), "Failed to set NoModify key");
@@ -1091,7 +1091,7 @@ void Bootstrapper::RegisterProtocolHandler(const std::wstring& protocolScheme, c
 
 	// register the protocol handler scheme
 	auto key = CreateKey(isPerUser() ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE, (_T("SOFTWARE\\Classes\\") + protocolScheme).c_str());
-	throwHRESULT(key->SetStringValue(_T(""), _T("URL: Pekora Protocol")), format_string("failed to set value for protocol"));
+	throwHRESULT(key->SetStringValue(_T(""), _T("URL: Seattle Protocol")), format_string("failed to set value for protocol"));
 	throwHRESULT(key->SetStringValue(_T("URL Protocol"), _T("")), format_string("failed to set value for protocol"));
 
 	CreateKey(key->m_hKey, _T("DefaultIcon"), exePath.c_str());
@@ -1365,7 +1365,7 @@ bool Bootstrapper::checkBootstrapperVersion()
 	moduleVersionNumber = vi.GetFileVersionAsString();
 	LOG_ENTRY1("module file version: %s", moduleVersionNumber.c_str());
 
-	message("Connecting to Pekora...");
+	message("Connecting to Seattle...");
 	try
 	{
 		installVersion = fetchVersionGuid(); // TODO: Why is this setting the installVersion?
@@ -1385,7 +1385,7 @@ bool Bootstrapper::checkBootstrapperVersion()
 	{
 		std::ostringstream result;
 		std::string eTag;
-		HttpTools::httpGet(this, installHost, format_string("/%s-%S", installVersion.c_str(), GetVersionFileName()), eTag, result, false, &Bootstrapper::dummyProgress);
+		HttpTools::httpGet(this, installHost, format_string("/%s/%S", installVersion.c_str(), GetVersionFileName()), eTag, result, false, &Bootstrapper::dummyProgress);
 		result << (char) 0;
 		bootstrapperVersion = result.str().c_str();
 
@@ -1449,7 +1449,7 @@ bool Bootstrapper::checkBootstrapperVersion()
 
 			try
 			{
-				message("Getting the latest Pekora...");
+				message("Getting the latest Seattle...");
 
 				// We could use an "exe" extension, but hiding the type isn't a bad idea?
 				newBootstrapper = simple_logger<wchar_t>::get_temp_filename(_T("tmp"));
@@ -1457,7 +1457,7 @@ bool Bootstrapper::checkBootstrapperVersion()
 					std::ofstream bootstrapperFile(newBootstrapper.c_str(), std::ios::binary);
 					// This version of the downloader doesn't show progress
 					std::string eTag;
-					HttpTools::httpGetCdn(this, installHost, format_string("/%s-%S", installVersion.c_str(), GetBootstrapperFileName().c_str()), eTag, bootstrapperFile, false, &Bootstrapper::dummyProgress);
+					HttpTools::httpGetCdn(this, installHost, format_string("/%s/%S", installVersion.c_str(), GetBootstrapperFileName().c_str()), eTag, bootstrapperFile, false, &Bootstrapper::dummyProgress);
 				}
 
 			}
@@ -1468,7 +1468,7 @@ bool Bootstrapper::checkBootstrapperVersion()
 					std::ofstream bootstrapperFile(newBootstrapper.c_str(), std::ios::binary);
 					// this we might need during rollback, lets be on safe side
 					std::string eTag;
-					HttpTools::httpGetCdn(this, installHost, format_string("/%s-Pekora.exe", installVersion.c_str()), eTag, bootstrapperFile, false, &Bootstrapper::dummyProgress);
+					HttpTools::httpGetCdn(this, installHost, format_string("/%s/Seattle.exe", installVersion.c_str()), eTag, bootstrapperFile, false, &Bootstrapper::dummyProgress);
 				}
 			}
 
@@ -1497,7 +1497,7 @@ bool Bootstrapper::checkBootstrapperVersion()
 
 void Bootstrapper::writeAppSettings()
 {
-	message("Configuring Pekora...");
+	message("Configuring Seattle...");
 
 	std::wstring appSettings(programDirectory() + _T("AppSettings.xml"));
 	std::ofstream file(appSettings.c_str());
@@ -1629,7 +1629,7 @@ void Bootstrapper::checkOSPrerequisit()
 
 	LOG_ENTRY("checkOSPrerequisit failed");
 	if (windowed)
-		dialog->DisplayError("Korone requires Microsoft Windows XP SP1 or greater", NULL);
+		dialog->DisplayError("Seattle requires Microsoft Windows XP SP1 or greater", NULL);
 	throw installer_error_exception(installer_error_exception::OsPrerequisite);
 }
 
@@ -1639,7 +1639,7 @@ void Bootstrapper::checkCPUPrerequisit()
 	{
 		LOG_ENTRY("checkCPUPrerequisit failed");
 	    if (windowed)
-		    dialog->DisplayError("Korone requires SSE2 support", NULL);
+		    dialog->DisplayError("Seattle requires SSE2 support", NULL);
 		throw installer_error_exception(installer_error_exception::CpuPrerequisite);
 	}
 }
@@ -1664,7 +1664,7 @@ void Bootstrapper::checkIEPrerequisit()
 	{
 		LOG_ENTRY("checkIEPrerequisit failed");
 		if (windowed)
-			dialog->DisplayError("Korone requires Microsoft Internet Explorer 6.0 or greater", NULL);
+			dialog->DisplayError("Seattle requires Microsoft Internet Explorer 6.0 or greater", NULL);
 		throw installer_error_exception(installer_error_exception::IePrerequisite);
 	}
 }
@@ -1834,7 +1834,7 @@ void Bootstrapper::checkDiskSpace()
 	::GetDiskFreeSpaceEx(programDirectory().c_str(), &freeBytesAvailableToCaller, NULL, NULL);
 	if (freeBytesAvailableToCaller.QuadPart < 40*1e6)
 	{
-		dialog->DisplayError("There is not enough room on your disk to install Pekora. Please free up some space and try again.", NULL);
+		dialog->DisplayError("There is not enough room on your disk to install Seattle. Please free up some space and try again.", NULL);
 		throw installer_error_exception(installer_error_exception::DiskSpacePrerequisite);
 	}
 }
@@ -1899,10 +1899,10 @@ void Bootstrapper::run()
 			LOG_ENTRY("Error: IsNetworkAlive failed");
 			if (windowed && isLatestProcess())
 			{
-				CString message = _T("Korone cannot connect to the Internet\n\nDoes your computer have a working network connection?  Is antivirus software preventing Roblox from accessing the Internet?");
+				CString message = _T("Seattle cannot connect to the Internet\n\nDoes your computer have a working network connection?  Is antivirus software preventing Roblox from accessing the Internet?");
 				if (!robloxAppArgs.empty())
 				{
-					message += _T("\n\nIf you Korone may not work properly.");
+					message += _T("\n\nIf you Seattle may not work properly.");
 					// TODO: CTaskDialog should use nice command buttons
 					if (dialog->MessageBox(message, _T("Error"), MB_OKCANCEL | MB_ICONEXCLAMATION) == IDOK)
 					{
@@ -1930,10 +1930,10 @@ void Bootstrapper::run()
 
 			if (windowed && isLatestProcess())
 			{
-				CString message = _T("Cannot connect to the Pekora.\n\nIs antivirus software preventing Pekora from accessing the Internet?");
+				CString message = _T("Cannot connect to the Seattle.\n\nIs antivirus software preventing Seattle from accessing the Internet?");
 				if (!robloxAppArgs.empty())
 				{
-					message += _T("\n\nIf you continue Pekora may not work properly.");
+					message += _T("\n\nIf you continue Seattle may not work properly.");
 					if (dialog->MessageBox(message, _T("Error"), MB_OKCANCEL | MB_ICONEXCLAMATION) == IDOK)
 					{
 						installVersion = queryInstalledVersion();
@@ -1954,7 +1954,7 @@ void Bootstrapper::run()
 			if (queryInstalledVersion() != installVersion)
 				throw non_zero_exit_exception();
 
-			LOG_ENTRY("Korone is up to date, returning success");
+			LOG_ENTRY("Seattle is up to date, returning success");
 			goto done;
 		}
 
@@ -2194,7 +2194,7 @@ void Bootstrapper::run()
 	catch (non_zero_exit_exception&)
 	{
 		exitCode = 1;
-		LOG_ENTRY("Korone is not up to date, returning failure");
+		LOG_ENTRY("Seattle is not up to date, returning failure");
 	}
 	catch (silent_exception&)
 	{
@@ -2683,7 +2683,7 @@ void Bootstrapper::install()
 			if (!perUser && !IsAdminRunning())
 			{
 				if (windowed)
-					dialog->DisplayError("On this machine you must install Pekora using an Administrator account", NULL);
+					dialog->DisplayError("On this machine you must install Seattle using an Administrator account", NULL);
 				throw installer_error_exception(installer_error_exception::AdminAccountRequired);
 			}
 		}
@@ -2813,7 +2813,7 @@ void Bootstrapper::setLatestProcess()
 {
 	int pid = _getpid();
 
-	const std::string latestProcessName = format_string("www.pekora.zip/%s/%s/latestProcess", installHost.c_str(), Type().c_str());
+	const std::string latestProcessName = format_string("www.seattl.lol/%s/%s/latestProcess", installHost.c_str(), Type().c_str());
 
 	latestProcess.Attach(CreateFileMapping(
 			 INVALID_HANDLE_VALUE,    // use paging file

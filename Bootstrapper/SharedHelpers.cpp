@@ -208,7 +208,7 @@ void deleteCurVersionKeys(simple_logger<wchar_t> &logger, bool isPerUser, const 
 {
 	CRegKey key;
 	LOG_ENTRY("deleteCurVersionKeys");
-	if(!FAILED(key.Open(isPerUser ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE, _T("Software\\Pekora Corporation\\Pekora"), KEY_WRITE)))
+	if(!FAILED(key.Open(isPerUser ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE, _T("Software\\Fireflies\\Seattle"), KEY_WRITE)))
 	{
 		LOG_ENTRY("deleteCurVersionKeys - key Opened");
 		key.DeleteValue(buildVersionKey(component).c_str());
@@ -220,7 +220,7 @@ void setCurrentVersion(simple_logger<wchar_t> &logger, bool isPerUser, const TCH
 {
 	CRegKey key;
 	LOG_ENTRY3("setCurrentVersion - opening write registry key component=%S, version=%S, url=%S", componentCode, version, baseUrl);
-	if (ERROR_SUCCESS == key.Create(isPerUser ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE, _T("Software\\Pekora Corporation\\Pekora")))
+	if (ERROR_SUCCESS == key.Create(isPerUser ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE, _T("Software\\Fireflies\\Seattle")))
 	{
 		std::wstring vKey = buildVersionKey(componentCode);
 		std::wstring uKey = buildUrlKey(componentCode);
@@ -241,7 +241,7 @@ void getCurrentVersion(simple_logger<wchar_t> &logger, bool isPerUser, const TCH
 	LOG_ENTRY1("getCurrentVersion - opening read registry key component=%S", componentCode);
 	version[0] = 0;
 	baseUrl[0] = 0;
-	if (ERROR_SUCCESS == key.Open(isPerUser ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE, _T("Software\\Pekora Corporation\\Pekora"), KEY_READ))
+	if (ERROR_SUCCESS == key.Open(isPerUser ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE, _T("Software\\Fireflies\\Seattle"), KEY_READ))
 	{
 		std::wstring vKey = buildVersionKey(componentCode);
 		std::wstring uKey = buildUrlKey(componentCode);
@@ -260,17 +260,17 @@ void getCurrentVersion(simple_logger<wchar_t> &logger, bool isPerUser, const TCH
 
 std::wstring getPlayerInstallKey()
 {
-	return std::wstring(_T("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{373B1718-8CC5-4567-8EE2-9033AD08A680}"));
+	return std::wstring(_T("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{5A11122D-AB05-482B-B8E6-260023608EB6}"));
 }
 
 std::wstring getStudioInstallKey()
 {
-	return std::wstring(_T("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{B805FF17-92FE-4757-8142-F0A2850DFE03}"));
+	return std::wstring(_T("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{1AB3413C-52FE-401F-BB7C-0DEEC5908D55}"));
 }
 
 std::wstring getQTStudioInstallKey()
 {
-	return std::wstring(_T("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{2922D6F1-2865-4EFA-97A9-94EEAB3AFA14}"));
+	return std::wstring(_T("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{BD1376F2-692A-41FC-84BE-46CCBF880023}"));
 }
 
 std::wstring getPlayerCode()
@@ -291,7 +291,7 @@ std::wstring getQTStudioCode()
 void appendEnvironmentToProtocolScheme(std::wstring& scheme, const std::string baseUrl)
 {
 	std::vector<std::string> baseHostUrlParts = splitOn(baseUrl, '.');
-	if (baseHostUrlParts[1] != "pekora")
+	if (baseHostUrlParts[1] != "seattle")
 	{
 		scheme += convert_s2w("-" + baseHostUrlParts[1]);
 	}
@@ -299,7 +299,7 @@ void appendEnvironmentToProtocolScheme(std::wstring& scheme, const std::string b
 
 std::wstring getPlayerProtocolScheme(const std::string& baseUrl)
 {
-	std::wstring scheme = _T("pekora-player");
+	std::wstring scheme = _T("seattle-player");
 
 	appendEnvironmentToProtocolScheme(scheme, baseUrl);
 
@@ -308,7 +308,7 @@ std::wstring getPlayerProtocolScheme(const std::string& baseUrl)
 
 std::wstring getQTStudioProtocolScheme(const std::string& baseUrl)
 {
-	std::wstring scheme = _T("pekora-studio");
+	std::wstring scheme = _T("seattle-studio");
 
 	appendEnvironmentToProtocolScheme(scheme, baseUrl);
 
@@ -317,22 +317,22 @@ std::wstring getQTStudioProtocolScheme(const std::string& baseUrl)
 
 std::wstring getStudioRegistrySubPath()
 {
-	return _T("StudioPekoraReg");
+	return _T("SeattleStudio");
 }
 
 std::wstring getStudioRegistryPath()
 {
-	return _T("SOFTWARE\\") + getStudioRegistrySubPath();
+	return _T("Software\\Fireflies\\") + getStudioRegistrySubPath();
 }
 
 std::wstring getQTStudioRegistrySubPath()
 {
-	return _T("StudioQTProjectXReg");
+	return _T("SeattleStudioQT");
 }
 
 std::wstring getQTStudioRegistryPath()
 {
-	return _T("SOFTWARE\\") + getQTStudioRegistrySubPath();
+	return _T("Software\\Fireflies\\") + getQTStudioRegistrySubPath();
 }
 
 static void createShortcut(const TCHAR *linkFileName, const TCHAR *exePath, const TCHAR *args)
@@ -456,7 +456,7 @@ void updateExistingRobloxShortcuts(
 				bool isMFCStudio = (StrCmp(exeName, _T(STUDIOBOOTSTAPPERNAME)) == 0); // true if we're updating for MFC studio
 				LOG_ENTRY1("updateExistingRobloxShortcuts isStudio = %d", isMFCStudio);
 
-				if (StrStr(foundFilePath, _T("Pekora.exe")))
+				if (StrStr(foundFilePath, _T("Seattle.exe")))
 				{
 					// this shortcut points to the player
 					TCHAR args[MAX_PATH];

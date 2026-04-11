@@ -76,30 +76,30 @@ inline const void* to_voidptr(T value) {
 #define LLOG_ENTRY3(logger, msg, a1, a2, a3) logger.write_logentry(msg, to_voidptr(a1), to_voidptr(a2), to_voidptr(a3))
 #define LLOG_ENTRY4(logger, msg, a1, a2, a3, a4) logger.write_logentry(msg, to_voidptr(a1), to_voidptr(a2), to_voidptr(a3), to_voidptr(a4))
 
-#define FIREFOXREGKEY               "@nsroblox.pekora.zip/launcher"
-#define FIREFOXREGKEY64             "@nsroblox.pekora.zip/launcher64"
+#define FIREFOXREGKEY               "@nsroblox.seattl.lol/launcher"
+#define FIREFOXREGKEY64             "@nsroblox.seattl.lol/launcher64"
 
-#define PLAYERLINKNAME_CUR          "Pekora Player"
-#define PLAYERLINKNAMELEGACY        "Play Pekora"
+#define PLAYERLINKNAME_CUR          "Seattle Player"
+#define PLAYERLINKNAMELEGACY        "Play Seattle"
 
 // MFC Studio names
-#define STUDIOEXENAME               "ProjectXStudioBeta.exe"
-#define STUDIOBOOTSTAPPERNAME       "ProjectXStudioBeta.exe"
-#define STUDIOLINKNAMELEGACY        "Pekora Studio"    // wrong case
+#define STUDIOEXENAME               "SeattleStudioBeta.exe"
+#define STUDIOBOOTSTAPPERNAME       "SeattleStudioBeta.exe"
+#define STUDIOLINKNAMELEGACY        "Seattle Studio"    // wrong case
 
 // QT Studio names
-#define STUDIOQTEXENAME             "ProjectXStudioBeta.exe"
-#define STUDIOBOOTSTAPPERNAMEBETA   "ProjectXStudioLauncherBeta.exe"
-#define STUDIOQTLINKNAME_CUR        "ProjectX Studio"
-#define STUDIOQTLINKNAME            "ProjectX Studio Beta"
-#define STUDIOQTLINKNAME20          "ProjectX Studio 2.0"
-#define STUDIOQTLINKNAME20BETA      "ProjectX Studio 2.0 Beta"
-#define STUDIOQTLINKNAME2013        "ProjectX Studio 2013"
+#define STUDIOQTEXENAME             "SeattleStudioBeta.exe"
+#define STUDIOBOOTSTAPPERNAMEBETA   "SeattleStudioLauncherBeta.exe"
+#define STUDIOQTLINKNAME_CUR        "Seattle Studio"
+#define STUDIOQTLINKNAME            "Seattle Studio Beta"
+#define STUDIOQTLINKNAME20          "Seattle Studio 2.0"
+#define STUDIOQTLINKNAME20BETA      "Seattle Studio 2.0 Beta"
+#define STUDIOQTLINKNAME2013        "Seattle Studio 2013"
 
 // Player names
-#define  PLAYEREXENAME				"ProjectXPlayerBeta.exe"
+#define  PLAYEREXENAME				"SeattlePlayerBeta.exe"
 
-// Version URL string names (setup.pekora.zip/XXX) - replace XXX with these values to get the most recent version
+// Version URL string names (setup.seattl.lol/XXX) - replace XXX with these values to get the most recent version
 // Unfortunately these have to be defined globally so Player knows how to find the latest version of Studio to download
 #define VERSIONGUIDNAMESTUDIO       "versionQTStudio"
 #define VERSIONGUIDNAMERCC			"NOVERSION"
