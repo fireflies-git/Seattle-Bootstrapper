@@ -1973,7 +1973,7 @@ void Bootstrapper::run()
 
 					// This version of the downloader doesn't show progress
 					std::string eTag;
-					status_code = HttpTools::httpGetCdn(this, installHost, format_string("/%s-rbxManifest.txt", installVersion.c_str()), eTag, ofs, false, &Bootstrapper::dummyProgress);
+					status_code = HttpTools::httpGetCdn(this, installHost, format_string("/%s/rbxManifest.txt", installVersion.c_str()), eTag, ofs, false, &Bootstrapper::dummyProgress);
 				}
 
 				if (status_code == 200 || status_code == 304)
@@ -2038,7 +2038,7 @@ void Bootstrapper::run()
 				// if the system is indicating we have roblox installed, try and find the exe
 				HANDLE robloxAppFile;
 				WIN32_FIND_DATA robloxAppFileData;
-				std::wstring pathCheckingFor = programDirectory() + L"2017L\\" + GetRobloxAppFileName().c_str();
+				std::wstring pathCheckingFor = programDirectory() + L"2022M\\" + GetRobloxAppFileName().c_str();
 				// 2017L is always our default client if none is specified so check that
 				robloxAppFile = FindFirstFile(pathCheckingFor.c_str(), &robloxAppFileData);
 
