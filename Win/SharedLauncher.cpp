@@ -179,13 +179,83 @@ CRegKey GetKey(CString& out_operation, bool isStudioKey, bool is64bits)
 	return path;
 	}
 
-	static void launchRoblox(TCHAR cmd[2048])
+	// Best-effort: inject ClientGuard into the just-spawned client.
+	// Returns true on success, false on any failure (caller proceeds anyway).
+	template<class CHARTYPE>
+	static bool tryInjectClientGuard(simple_logger<CHARTYPE>& logger, HANDLE hProcess, const std::wstring& dllPath)
+	{
+		if (dllPath.empty()) return false;
+		if (::GetFileAttributesW(dllPath.c_str()) == INVALID_FILE_ATTRIBUTES)
+		{
+			logger.write_logentry("ClientGuard DLL not present at expected path — skipping injection");
+			return false;
+		}
+
+		const SIZE_T bytes = (dllPath.size() + 1) * sizeof(wchar_t);
+		LPVOID remote = ::VirtualAllocEx(hProcess, NULL, bytes, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+		if (!remote)
+		{
+			logger.write_logentry("VirtualAllocEx failed in ClientGuard injection");
+			return false;
+		}
+
+		SIZE_T written = 0;
+		if (!::WriteProcessMemory(hProcess, remote, dllPath.c_str(), bytes, &written) || written != bytes)
+		{
+			logger.write_logentry("WriteProcessMemory failed in ClientGuard injection");
+			::VirtualFreeEx(hProcess, remote, 0, MEM_RELEASE);
+			return false;
+		}
+
+		// Same kernel32 base for same-bitness parent/child, which is the
+		// case here (both bootstrapper and client are 32-bit).
+		HMODULE k32 = ::GetModuleHandleW(L"kernel32.dll");
+		LPTHREAD_START_ROUTINE loadLib =
+			(LPTHREAD_START_ROUTINE)::GetProcAddress(k32, "LoadLibraryW");
+		if (!loadLib)
+		{
+			::VirtualFreeEx(hProcess, remote, 0, MEM_RELEASE);
+			return false;
+		}
+
+		HANDLE thr = ::CreateRemoteThread(hProcess, NULL, 0, loadLib, remote, 0, NULL);
+		if (!thr)
+		{
+			logger.write_logentry("CreateRemoteThread failed in ClientGuard injection");
+			::VirtualFreeEx(hProcess, remote, 0, MEM_RELEASE);
+			return false;
+		}
+
+		// Bounded wait — if the loader is hung we'd rather launch unprotected
+		// than block the user from playing.
+		DWORD waitRc = ::WaitForSingleObject(thr, 5000);
+		DWORD exitCode = 0;
+		::GetExitCodeThread(thr, &exitCode);
+		::CloseHandle(thr);
+		::VirtualFreeEx(hProcess, remote, 0, MEM_RELEASE);
+
+		if (waitRc != WAIT_OBJECT_0 || exitCode == 0)
+		{
+			logger.write_logentry("ClientGuard load did not complete cleanly (wait=%d exit=%d)",
+				(int)waitRc, (int)exitCode);
+			return false;
+		}
+
+		return true;
+	}
+
+	template<class CHARTYPE>
+	static void launchRoblox(simple_logger<CHARTYPE>& logger, TCHAR cmd[2048], const std::wstring& dllPath)
 	{
 	CProcessInformation pi;
 	STARTUPINFO si = {0};
 	si.cb = sizeof(si);
-	if (!::CreateProcess(NULL, cmd, NULL, NULL, false, NORMAL_PRIORITY_CLASS, NULL, NULL, &si, pi))
+	if (!::CreateProcess(NULL, cmd, NULL, NULL, false, CREATE_SUSPENDED | NORMAL_PRIORITY_CLASS, NULL, NULL, &si, pi))
 		AtlThrowLastWin32();
+
+	(void)tryInjectClientGuard(logger, pi.pi.hProcess, dllPath);
+
+	::ResumeThread(pi.pi.hThread);
 	}
 
 	template<class CHARTYPE>
@@ -284,9 +354,19 @@ CRegKey GetKey(CString& out_operation, bool isStudioKey, bool is64bits)
 			}
 
 			logger.write_logentry("Final cmd = %s, unideEventName = %s, hidden = %d", cmd, unhideEventName, startInHiddenMode);
-			
+
 			operation = cmd;
-			launchRoblox(cmd);
+
+			// Derive sibling DLL path: <exe-dir>\SeattleClientGuard.dll
+			std::wstring dllPath;
+			{
+				std::wstring exePath((LPCTSTR)path.m_strPath);
+				size_t slash = exePath.find_last_of(L"\\/");
+				if (slash != std::wstring::npos)
+					dllPath = exePath.substr(0, slash + 1) + L"SeattleClientGuard.dll";
+			}
+
+			launchRoblox(logger, cmd, dllPath);
 		}
 		catch( CAtlException e )
 		{

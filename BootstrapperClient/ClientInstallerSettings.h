@@ -34,5 +34,9 @@ public:
 		DECLARE_DATA_BOOL(CreateEdgeRegistry);
 		DECLARE_DATA_BOOL(DeleteEdgeRegistry);
 		DECLARE_DATA_BOOL(ReplaceCdnTxt);
+		// Anti-cheat fingerprint consent + cached hardware hash.
+		DECLARE_DATA_BOOL(FingerprintConsentGiven);
+		DECLARE_DATA_STRING(ConsentTimestamp);
+		DECLARE_DATA_STRING(HardwareHashCache);
 	END_DATA_MAP();
 };
