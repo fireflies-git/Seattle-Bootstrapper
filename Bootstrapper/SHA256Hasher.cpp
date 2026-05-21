@@ -2,60 +2,67 @@
 #include "SHA256Hasher.h"
 #include "format_string.h"
 
-extern void throwLastError(BOOL result, const std::string& message);
+#include <bcrypt.h>
+#include <stdexcept>
+
+#pragma comment(lib, "bcrypt.lib")
+
+#ifndef BCRYPT_SUCCESS
+#define BCRYPT_SUCCESS(s) (((NTSTATUS)(s)) >= 0)
+#endif
 
 SHA256Hasher::SHA256Hasher(void)
+	: hAlg(nullptr), hHash(nullptr)
 {
-	// PROV_RSA_AES is the provider that exposes CALG_SHA_256.
-	throwLastError(CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_AES, CRYPT_VERIFYCONTEXT), "Failed CryptAcquireContext");
+	NTSTATUS s = ::BCryptOpenAlgorithmProvider(
+		(BCRYPT_ALG_HANDLE*)&hAlg, BCRYPT_SHA256_ALGORITHM, nullptr, 0);
+	if (!BCRYPT_SUCCESS(s))
+		throw std::runtime_error("BCryptOpenAlgorithmProvider(SHA256) failed");
 
-	try
+	s = ::BCryptCreateHash((BCRYPT_ALG_HANDLE)hAlg, (BCRYPT_HASH_HANDLE*)&hHash,
+		nullptr, 0, nullptr, 0, 0);
+	if (!BCRYPT_SUCCESS(s))
 	{
-		throwLastError(CryptCreateHash(hProv, CALG_SHA_256, 0, 0, &hHash), "Failed CryptCreateHash(SHA256)");
-	}
-	catch (...)
-	{
-		CryptReleaseContext(hProv, 0);
-		throw;
+		::BCryptCloseAlgorithmProvider((BCRYPT_ALG_HANDLE)hAlg, 0);
+		hAlg = nullptr;
+		throw std::runtime_error("BCryptCreateHash(SHA256) failed");
 	}
 }
 
 SHA256Hasher::~SHA256Hasher(void)
 {
-	CryptDestroyHash(hHash);
-	CryptReleaseContext(hProv, 0);
+	if (hHash) ::BCryptDestroyHash((BCRYPT_HASH_HANDLE)hHash);
+	if (hAlg)  ::BCryptCloseAlgorithmProvider((BCRYPT_ALG_HANDLE)hAlg, 0);
 }
 
 void SHA256Hasher::addData(const std::string& data)
 {
-	throwLastError(CryptHashData(hHash, (const BYTE*)data.c_str(), (DWORD)data.length(), 0), "Failed CryptHashData");
+	addData(data.c_str(), data.length());
 }
 
 void SHA256Hasher::addData(const char* data, size_t nBytes)
 {
-	throwLastError(CryptHashData(hHash, (const BYTE*)data, (DWORD)nBytes, 0), "Failed CryptHashData");
+	NTSTATUS s = ::BCryptHashData((BCRYPT_HASH_HANDLE)hHash,
+		(PUCHAR)data, (ULONG)nBytes, 0);
+	if (!BCRYPT_SUCCESS(s))
+		throw std::runtime_error("BCryptHashData failed");
 }
 
 const char* SHA256Hasher::c_str()
 {
-	if (result.size() == 0)
+	if (result.empty())
 	{
-		DWORD hashLength = 0;
-		DWORD foo = sizeof(hashLength);
-		throwLastError(CryptGetHashParam(hHash, HP_HASHSIZE, (BYTE*)&hashLength, &foo, 0), "Failed CryptGetHashParam HP_HASHSIZE");
+		BYTE digest[32] = { 0 };
+		NTSTATUS s = ::BCryptFinishHash((BCRYPT_HASH_HANDLE)hHash,
+			digest, sizeof(digest), 0);
+		if (!BCRYPT_SUCCESS(s))
+			throw std::runtime_error("BCryptFinishHash failed");
 
-		if (hashLength > 256)
-			throw std::runtime_error("hashLength is too long");
-		BYTE data[256] = { 0 };
-
-		throwLastError(CryptGetHashParam(hHash, HP_HASHVAL, data, &hashLength, 0), "Failed CryptGetHashParam HP_HASHVAL");
-
-		for (size_t i = 0; i < hashLength; i++)
+		for (size_t i = 0; i < sizeof(digest); ++i)
 		{
-			std::string s = format_string("%02x", data[i]);
-			result += s;
+			std::string s2 = format_string("%02x", digest[i]);
+			result += s2;
 		}
 	}
-
 	return result.c_str();
 }

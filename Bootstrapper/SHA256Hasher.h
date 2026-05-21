@@ -1,14 +1,13 @@
 #pragma once
-#include "wincrypt.h"
 #include <string>
 
-// Mirrors MD5Hasher but uses CALG_SHA_256. Used for the hardware-fingerprint
-// composite hash sent to the alt-detection backend.
+// SHA-256 wrapper. Uses BCrypt (Vista+) so the bootstrapper's XP-era
+// _WIN32_WINNT in targetver.h doesn't block compilation.
 class SHA256Hasher
 {
 	std::string result;
-	HCRYPTPROV hProv;
-	HCRYPTHASH hHash;
+	void* hAlg;    // BCRYPT_ALG_HANDLE
+	void* hHash;   // BCRYPT_HASH_HANDLE
 public:
 	SHA256Hasher(void);
 	~SHA256Hasher(void);
