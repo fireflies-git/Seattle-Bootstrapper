@@ -16,6 +16,8 @@
 #include "shellapi.h"
 #include "ShutdownDialog.h"
 #include "MD5Hasher.h"
+#include "ConsentDialog.h"
+#include "HardwareFingerprint.h"
 #include "SharedLauncher.h"
 #include "StringConv.h"
 #include "RobloxServicesTools.h"
@@ -1916,6 +1918,44 @@ void Bootstrapper::run()
 				}
 			}
 			goto done;
+		}
+
+		// Anti-cheat consent + hardware-fingerprint capture.
+		// Runs once per machine — consent state is persisted to
+		// %LOCALAPPDATA%\Seattle\consent.json. The fingerprint cache is
+		// DPAPI-encrypted at %LOCALAPPDATA%\Seattle\hwfp.dat.
+		try
+		{
+			auto dir = FileSystem::getSpecialFolder(FileSystem::RobloxUserApplicationData, true);
+			std::wstring consentPath = dir + L"consent.json";
+			bool consentExists = ::GetFileAttributesW(consentPath.c_str()) != INVALID_FILE_ATTRIBUTES;
+
+			if (!consentExists && windowed)
+			{
+				auto result = ConsentDialog::Show();
+				if (!result.consented)
+				{
+					LOG_ENTRY("User declined fingerprint consent — exiting");
+					goto done;
+				}
+
+				std::ofstream out(consentPath, std::ios::trunc);
+				if (out.is_open())
+				{
+					out << "{\"consented\":true,\"timestamp\":\"" << result.timestampUtc << "\"}";
+				}
+			}
+
+			if (consentExists || windowed)
+			{
+				// Best-effort: compute and cache. Upload happens later through
+				// an authenticated channel (the cache is read on next launch).
+				HardwareFingerprint::CollectAndHashCached();
+			}
+		}
+		catch (...)
+		{
+			LOG_ENTRY("Fingerprint consent/collection raised — continuing without it");
 		}
 
 		LoadSettings();

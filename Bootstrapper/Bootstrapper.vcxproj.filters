@@ -45,6 +45,15 @@
     <ClCompile Include="MD5Hasher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SHA256Hasher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HardwareFingerprint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsentDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="ProgressDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -134,6 +143,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MD5Hasher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SHA256Hasher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HardwareFingerprint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsentDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Progress.h">

@@ -250,12 +250,15 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ComModule.cpp" />
+    <ClCompile Include="ConsentDialog.cpp" />
     <ClCompile Include="FileDeployer.cpp" />
     <ClCompile Include="FileSystem.cpp" />
+    <ClCompile Include="HardwareFingerprint.cpp" />
     <ClCompile Include="HttpTools.cpp" />
     <ClCompile Include="LegacyDialog.cpp" />
     <ClCompile Include="MainDialog.cpp" />
     <ClCompile Include="MD5Hasher.cpp" />
+    <ClCompile Include="SHA256Hasher.cpp" />
     <ClCompile Include="ProgressDialog.cpp" />
     <ClCompile Include="SharedHelpers.cpp" />
     <ClCompile Include="ShutdownDialog.cpp" />
@@ -289,13 +292,16 @@
     <ClInclude Include="BootstrapperSite.h" />
     <ClInclude Include="ComModule.h" />
     <ClInclude Include="CommonResourceConstants.h" />
+    <ClInclude Include="ConsentDialog.h" />
     <ClInclude Include="FileDeployer.h" />
     <ClInclude Include="FileSystem.h" />
     <ClInclude Include="GoogleAnalyticsHelper.h" />
+    <ClInclude Include="HardwareFingerprint.h" />
     <ClInclude Include="HttpTools.h" />
     <ClInclude Include="LegacyDialog.h" />
     <ClInclude Include="MainDialog.h" />
     <ClInclude Include="MD5Hasher.h" />
+    <ClInclude Include="SHA256Hasher.h" />
     <ClInclude Include="Progress.h" />
     <ClInclude Include="ProgressDialog.h" />
     <ClInclude Include="Resource.h" />
