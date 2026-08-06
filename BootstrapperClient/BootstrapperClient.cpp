@@ -1068,12 +1068,12 @@ void BootstrapperClient::DeployComponents(bool isUpdating, bool commitData)
 	std::vector<std::pair<std::wstring, std::wstring> > files;
 
 	// Create folders
-	//createDirectory((programDirectory() + _T("2017L")).c_str());
+	createDirectory((programDirectory() + _T("2017L")).c_str());
 	//createDirectory((programDirectory() + _T("2018L")).c_str());
 	//createDirectory((programDirectory() + _T("2020L")).c_str());
 	createDirectory((programDirectory() + _T("2021M")).c_str());
 	// Download files
-	//files.push_back(std::pair<std::wstring, std::wstring>(_T("SeattleApp2017L.zip"), _T("2017L"))); 
+	files.push_back(std::pair<std::wstring, std::wstring>(_T("SeattleApp2017L.zip"), _T("2017L"))); 
 	//files.push_back(std::pair<std::wstring, std::wstring>(_T("SeattleApp2018L.zip"), _T("2018L")));
 	//files.push_back(std::pair<std::wstring, std::wstring>(_T("SeattleApp2020L.zip"), _T("2020L")));
 	files.push_back(std::pair<std::wstring, std::wstring>(_T("SeattleApp2021M.zip"), _T("2021M")));
